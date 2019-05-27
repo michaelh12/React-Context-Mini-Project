@@ -2,6 +2,7 @@ import React, { Fragment, useContext } from 'react';
 import ReactDom from 'react-dom';
 import { StoreProvider } from './Store';
 import { Store } from './Store';
+import './index.css';
 
 export default function App(): JSX.Element {
     const URL = 'http://api.tvmaze.com/singlesearch/shows?q=rick-&-morty&embed=episodes'
@@ -25,12 +26,14 @@ export default function App(): JSX.Element {
 
     return (
         <React.Fragment>
-            <h1>Rick and Morty</h1>
-            <p>Pick your favourite episode!!!</p>
-            <section>
+            <header className="header">
+                <h1 className="text">Rick and Morty</h1>
+                <p>Pick your favourite episode!!!</p>
+            </header>
+            <section className="episode-layout">
                 {state.episodes.map(episode => {
                     return (
-                        <section key={episode.id}>
+                        <section key={episode.id} className="episode-box">
                             {console.log('from inside map', episode)}
                             <img src={episode.image ? episode.image.medium : null} alt={`Rick and Mort ${episode.name}`} />
                             <div>{episode.name}</div>
