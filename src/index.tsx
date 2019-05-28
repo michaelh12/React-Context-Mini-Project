@@ -1,13 +1,19 @@
 import React, { Fragment, useContext } from 'react';
 import ReactDom from 'react-dom';
-import { StoreProvider } from './Store';
-import { Store } from './Store';
+import { StoreProvider, Store } from './Store';
+import { IAction } from './interfaces';
 import './index.css';
+// import EpisodeList from './EpisodesList';
+
+const EpisodeList = React.lazy<any>(() => import('./EpisodesList'));
+
+
 
 export default function App(): JSX.Element {
     const URL = 'http://api.tvmaze.com/singlesearch/shows?q=rick-&-morty&embed=episodes'
 
     const { state, dispatch } = React.useContext(Store);
+
 
     React.useEffect(() => {
         state.episodes.length === 0 && fetchDataAction();
@@ -16,34 +22,53 @@ export default function App(): JSX.Element {
     const fetchDataAction = async () => {
         const data = await fetch(URL);
         const dataJSON = await data.json();
-        dispatch({
+        return dispatch({
             type: 'FETCH_DATA',
             payload: dataJSON._embedded.episodes
         });
     }
 
-    console.log('from inside component', state)
+    const toggleFavAction = (episode): IAction => {
+        const episodeInFav = state.favourites.includes(episode);
+        let dispatchObj = {
+            type: 'ADD_FAV',
+            payload: episode
+        }
+        if (episodeInFav) {
+            const favWithoutEpisode = state.favourites.filter(fav => fav.id !== episode.id);
+            dispatchObj = {
+                type: 'REMOVE_FAV',
+                payload: favWithoutEpisode
+            }
+        }
+        return dispatch(dispatchObj);
+    }
+
+
+    const props = {
+        episodes: state.episodes,
+        toggleFavAction,
+        favourites: state.favourites
+    }
+
+    console.log(state)
 
     return (
         <React.Fragment>
             <header className="header">
-                <h1 className="text">Rick and Morty</h1>
-                <p>Pick your favourite episode!!!</p>
+                <div>
+                    <h1 className="text">Rick and Morty</h1>
+                    <p>Pick your favourite episode!!!</p>
+                </div>
+                <div>
+                    Favourite(s): {state.favourites.length}
+                </div>
             </header>
-            <section className="episode-layout">
-                {state.episodes.map(episode => {
-                    return (
-                        <section key={episode.id} className="episode-box">
-                            {console.log('from inside map', episode)}
-                            <img src={episode.image ? episode.image.medium : null} alt={`Rick and Mort ${episode.name}`} />
-                            <div>{episode.name}</div>
-                            <section>
-                                Seasion: {episode.season} Number: {episode.number}
-                            </section>
-                        </section>
-                    )
-                })}
-            </section>
+            <React.Suspense fallback={<div>...loading</div>}>
+                <section className="episode-layout">
+                    <EpisodeList {...props} />
+                </section>
+            </React.Suspense>
         </React.Fragment>
     )
 }
