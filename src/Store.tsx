@@ -12,7 +12,6 @@ function reducer(state: IState, action: IAction): IState {
     //pass
     switch (action.type) {
         case 'FETCH_DATA':
-            console.log('from reducer....', action.payload)
             return { ...state, episodes: action.payload }
         case 'ADD_FAV':
             return { ...state, favourites: [...state.favourites, action.payload] }
@@ -24,7 +23,7 @@ function reducer(state: IState, action: IAction): IState {
     }
 }
 
-export function StoreProvider(props: any): JSX.Element {
+export function StoreProvider({ children }: JSX.ElementChildrenAttribute): JSX.Element {
     const [state, dispatch] = React.useReducer(reducer, initialState);
-    return <Store.Provider value={{ state, dispatch }}> {props.children}</Store.Provider >
+    return <Store.Provider value={{ state, dispatch }}> {children}</Store.Provider >
 }

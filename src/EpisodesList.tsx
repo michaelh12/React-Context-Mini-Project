@@ -3,7 +3,8 @@ import { Store } from './Store'
 
 export default function EpisodesList(props: any): Array<JSX.Element> {
     // const { state, dispatch } = React.useContext(Store)
-    const { episodes, favourites, toggleFavAction } = props
+    const { episodes, store, favourites, toggleFavAction } = props
+    const { state, dispatch } = store;
 
     return (
 
@@ -16,7 +17,7 @@ export default function EpisodesList(props: any): Array<JSX.Element> {
                         <div>{episode.name}</div>
                         <section style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <div>Seasion: {episode.season} Number: {episode.number}</div>
-                            <button type="button" onClick={() => toggleFavAction(episode)} style={{ backgroundColor: favourites.includes(episode) ? "RED" : "GREEN" }}> {favourites.includes(episode) ? "Delete FAV" : "ADD FAV"}</button>
+                            <button type="button" onClick={() => toggleFavAction(state, dispatch, episode)} style={{ backgroundColor: favourites.includes(episode) ? "RED" : "GREEN" }}> {favourites.includes(episode) ? "Delete FAV" : "ADD FAV"}</button>
                         </section>
                     </section>
                 ) :

@@ -31,10 +31,24 @@ body{
 
 .header{
     display: flex;
+    align-items: center;
     justify-content: space-between;
     background: white;
     border-bottom: 1px solid black;
     padding: .5rem;
     position: sticky;
     top: 0;
+}
+
+#home-link{
+    margin: 5px;
+}
+
+#faves-link{
+    margin:5px;
+}
+
+#link-head-container{
+    display: flex;
+    flex-direction: column;
 }
